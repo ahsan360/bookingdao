@@ -1,0 +1,18 @@
+// Add this model to schema.prisma after the User model
+
+model PaymentGatewayConfig {
+  id              String   @id @default(uuid())
+  tenantId        String   @unique
+  gatewayType     String   @default("sslcommerz") // sslcommerz, stripe
+  storeId         String   // SSL Commerz Store ID (encrypted)
+  storePassword   String   // SSL Commerz Store Password (encrypted)
+  sandboxMode     Boolean  @default(true)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@map("payment_gateway_configs")
+}

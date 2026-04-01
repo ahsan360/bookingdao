@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx prisma migrate dev --name add_tenant_page_config)",
+      "Bash(npx prisma generate)",
+      "Bash(npx prisma:*)",
+      "Bash(node -e \":*)"
+    ]
+  }
+}

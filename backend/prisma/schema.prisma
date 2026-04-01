@@ -1,0 +1,242 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Plan {
+  id                     String   @id @default(uuid())
+  name                   String   @unique // "starter", "pro", "elite"
+  displayName            String   // "Starter", "Pro", "Elite"
+  maxAdmins              Int      // 1, 2, 6 (includes owner)
+  maxSchedules           Int      // 1, 3, -1 (unlimited)
+  maxAppointmentsPerMonth Int     // 50, 500, -1 (unlimited)
+  monthlyPrice           Int      @default(0) // in BDT
+  features               Json     @default("{}") // { paymentGateway: true, export: true, ... }
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  tenants                Tenant[]
+
+  @@map("plans")
+}
+
+model Tenant {
+  id            String                @id @default(uuid())
+  businessName  String
+  subdomain     String                @unique
+  email         String?               @unique
+  bookingMode   String                @default("both") // "payment_required" | "manual_only" | "both"
+  planId        String?
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  appointments  Appointment[]
+  auditLogs     AuditLog[]
+  campaigns     Campaign[]
+  pageConfig    TenantPageConfig?
+  paymentConfig PaymentGatewayConfig?
+  payments      Payment[]
+  plan          Plan?                 @relation(fields: [planId], references: [id])
+  schedules     Schedule[]
+  users         User[]
+
+  @@map("tenants")
+}
+
+model TenantPageConfig {
+  id              String   @id @default(uuid())
+  tenantId        String   @unique
+  headline        String?
+  description     String?
+  aboutText       String?
+  logoUrl         String?
+  bannerUrl       String?
+  galleryUrls     String[] @default([])
+  primaryColor    String?  @default("#4F46E5")
+  phone           String?
+  address         String?
+  socialFacebook  String?
+  socialInstagram String?
+  socialWhatsapp  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@map("tenant_page_configs")
+}
+
+model User {
+  id            String     @id @default(uuid())
+  tenantId      String?
+  firstName     String
+  lastName      String
+  email         String?    @unique
+  phone         String?    @unique
+  password      String
+  role          String     @default("admin") // "owner" | "admin"
+  isActive      Boolean    @default(true)
+  phoneVerified Boolean    @default(false)
+  emailVerified Boolean    @default(false)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  auditLogs     AuditLog[]
+  tenant        Tenant?    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@map("users")
+}
+
+model OtpVerification {
+  id        String   @id @default(uuid())
+  identifier String  // phone number or email
+  code      String
+  type      String   // "phone_verify" | "email_verify" | "password_reset"
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([identifier, type])
+  @@map("otp_verifications")
+}
+
+model PaymentGatewayConfig {
+  id            String   @id @default(uuid())
+  tenantId      String   @unique
+  gatewayType   String   @default("sslcommerz")
+  storeId       String
+  storePassword String
+  sandboxMode   Boolean  @default(true)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@map("payment_gateway_configs")
+}
+
+model Schedule {
+  id           String          @id @default(uuid())
+  tenantId     String
+  name         String
+  dayOfWeek    Int
+  startTime    String
+  endTime      String
+  slotDuration Int
+  price        Int             @default(0)
+  isActive     Boolean         @default(true)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  breaks       ScheduleBreak[]
+  tenant       Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, dayOfWeek])
+  @@map("schedules")
+}
+
+model ScheduleBreak {
+  id         String   @id @default(uuid())
+  scheduleId String
+  startTime  String
+  endTime    String
+  createdAt  DateTime @default(now())
+  schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+
+  @@index([scheduleId])
+  @@map("schedule_breaks")
+}
+
+model Appointment {
+  id              String    @id @default(uuid())
+  tenantId        String
+  customerName    String
+  customerEmail   String?
+  customerPhone   String
+  appointmentDate DateTime
+  startTime       String
+  endTime         String
+  status          String    @default("pending") // "pending" | "confirmed" | "completed" | "cancelled" | "expired"
+  completedAt     DateTime?
+  notes           String?
+  price           Int       @default(0)
+  lockedUntil     DateTime?
+  cancelledBy     String?   // userId who cancelled
+  cancelledAt     DateTime?
+  cancelReason    String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  tenant          Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  payment         Payment?
+
+  @@index([tenantId])
+  @@index([tenantId, appointmentDate])
+  @@index([status])
+  @@map("appointments")
+}
+
+model Payment {
+  id                   String      @id @default(uuid())
+  tenantId             String
+  appointmentId        String      @unique
+  amount               Int
+  currency             String      @default("BDT")
+  gatewayType          String      @default("sslcommerz")
+  gatewayTransactionId String?     @unique
+  sessionKey           String?
+  validationId         String?
+  idempotencyKey       String?     @unique
+  status               String
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+  appointment          Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  tenant               Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([appointmentId])
+  @@index([idempotencyKey])
+  @@map("payments")
+}
+
+model AuditLog {
+  id           String   @id @default(uuid())
+  tenantId     String
+  userId       String
+  userEmail    String?
+  userRole     String   // "owner" | "admin"
+  action       String   // "create" | "cancel" | "update" | "delete"
+  resourceType String   // "appointment" | "schedule" | "payment" | "admin" | "settings"
+  resourceId   String
+  details      Json     @default("{}") // { reason, oldValues, newValues, etc. }
+  createdAt    DateTime @default(now())
+  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, createdAt])
+  @@index([userId])
+  @@map("audit_logs")
+}
+
+model Campaign {
+  id         String   @id @default(uuid())
+  tenantId   String
+  title      String
+  message    String
+  channel    String   // "sms" | "email" | "both"
+  status     String   @default("draft") // "draft" | "sent" | "failed"
+  sentCount  Int      @default(0)
+  failCount  Int      @default(0)
+  sentAt     DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, createdAt])
+  @@map("campaigns")
+}
