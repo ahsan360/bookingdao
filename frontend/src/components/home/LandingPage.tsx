@@ -5,6 +5,7 @@ import {
     Calendar, Clock, Shield, Zap, Users, Globe, CreditCard,
     ArrowRight, CheckCircle, Star, Smartphone, BarChart3
 } from 'lucide-react';
+import FeatureShowcase from './FeatureShowcase';
 
 export default function LandingPage() {
     return (
@@ -24,6 +25,9 @@ export default function LandingPage() {
                         </a>
                         <a href="#how-it-works" className="hidden sm:inline-block text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors px-3 py-2 rounded-lg hover:bg-slate-50">
                             How It Works
+                        </a>
+                        <a href="#demo" className="hidden md:inline-block text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors px-3 py-2 rounded-lg hover:bg-slate-50">
+                            Demo
                         </a>
                         <a href="#pricing" className="hidden md:inline-block text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors px-3 py-2 rounded-lg hover:bg-slate-50">
                             Pricing
@@ -286,6 +290,9 @@ export default function LandingPage() {
                     </div>
                 </div>
             </section>
+
+            {/* Feature Showcase Slider */}
+            <FeatureShowcase />
 
             {/* Testimonials */}
             <section className="py-20 sm:py-28 px-4 sm:px-6">
