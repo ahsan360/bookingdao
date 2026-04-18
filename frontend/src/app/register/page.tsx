@@ -67,7 +67,6 @@ export default function RegisterPage() {
 
             login(response.data.token, response.data.user, response.data.tenant);
 
-            // New signup flow: redirect to onboarding (no tenant yet)
             router.push('/onboarding');
         } catch (err: any) {
             setError(err.response?.data?.error || 'Signup failed');
@@ -77,26 +76,27 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-4 py-8">
-            <div className="w-full max-w-md">
-                <div className="text-center mb-6 animate-fade-in">
-                    <Link href="/" className="inline-flex items-center space-x-2 mb-4">
-                        <Calendar className="w-9 h-9 text-primary-600" />
-                        <span className="text-2xl font-bold gradient-text">BookEase</span>
+        <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-slate-50">
+            <div className="w-full max-w-sm">
+                <div className="text-center mb-8">
+                    <Link href="/" className="inline-flex items-center space-x-2 mb-6">
+                        <div className="w-9 h-9 bg-primary-600 rounded-xl flex items-center justify-center">
+                            <Calendar className="w-5 h-5 text-white" />
+                        </div>
+                        <span className="text-xl font-bold text-slate-900">BookEase</span>
                     </Link>
-                    <h1 className="text-2xl font-bold text-slate-800 mb-1">Create Account</h1>
-                    <p className="text-sm text-slate-600">Start managing appointments today</p>
+                    <h1 className="text-2xl font-bold text-slate-900">Create account</h1>
+                    <p className="text-sm text-slate-500 mt-1">Start managing appointments today</p>
                 </div>
 
-                <div className="card animate-slide-up">
+                <div className="card">
                     {error && (
-                        <div className="mb-4 p-3 bg-red-50 border-2 border-red-200 rounded-lg text-red-700 text-sm">
+                        <div className="mb-4 p-3 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm">
                             {error}
                         </div>
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        {/* Name fields - side by side */}
                         <div className="grid grid-cols-2 gap-3">
                             <div>
                                 <label className="label">First Name</label>
@@ -122,38 +122,36 @@ export default function RegisterPage() {
                             </div>
                         </div>
 
-                        {/* Contact method toggle */}
                         <div>
-                            <label className="label mb-2">Sign up with</label>
+                            <label className="label">Sign up with</label>
                             <div className="flex rounded-xl bg-slate-100 p-1">
                                 <button
                                     type="button"
                                     onClick={() => setContactMethod('phone')}
-                                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition-all ${
                                         contactMethod === 'phone'
-                                            ? 'bg-white text-primary-700 shadow-sm'
+                                            ? 'bg-white text-slate-900 shadow-sm'
                                             : 'text-slate-500 hover:text-slate-700'
                                     }`}
                                 >
-                                    <Phone className="w-4 h-4" />
+                                    <Phone className="w-3.5 h-3.5" />
                                     Phone
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setContactMethod('email')}
-                                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition-all ${
                                         contactMethod === 'email'
-                                            ? 'bg-white text-primary-700 shadow-sm'
+                                            ? 'bg-white text-slate-900 shadow-sm'
                                             : 'text-slate-500 hover:text-slate-700'
                                     }`}
                                 >
-                                    <Mail className="w-4 h-4" />
+                                    <Mail className="w-3.5 h-3.5" />
                                     Email
                                 </button>
                             </div>
                         </div>
 
-                        {/* Phone or Email field */}
                         {contactMethod === 'phone' ? (
                             <div>
                                 <label className="label">Phone Number</label>
@@ -218,8 +216,8 @@ export default function RegisterPage() {
                         </button>
                     </form>
 
-                    <div className="mt-5 text-center">
-                        <p className="text-sm text-slate-600">
+                    <div className="mt-6 text-center">
+                        <p className="text-sm text-slate-500">
                             Already have an account?{' '}
                             <Link href="/login" className="text-primary-600 font-semibold hover:text-primary-700">
                                 Sign in

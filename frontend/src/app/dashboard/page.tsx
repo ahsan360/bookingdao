@@ -3,14 +3,13 @@
 import { useState, useEffect, useMemo } from 'react';
 import {
     Calendar, Users, ChevronLeft, ChevronRight, DollarSign, TrendingUp, CalendarDays,
-    ExternalLink, Copy, CheckCircle, XCircle, Filter, UserPlus, CheckCheck
+    ExternalLink, Copy, CheckCircle, XCircle, Filter, UserPlus, CheckCheck, ArrowUpRight, Link2
 } from 'lucide-react';
 import { useToast } from '@/components/useToast';
 import { useConfirm } from '@/components/ConfirmDialog';
 import { useAuth } from '@/lib/auth';
 import api from '@/lib/api';
 import type { Appointment, Pagination, Stats } from '@/types';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import StatusBadge from '@/components/ui/StatusBadge';
 
 export default function DashboardPage() {
@@ -81,7 +80,6 @@ export default function DashboardPage() {
         fetchAppointments(page);
     };
 
-    // Cancel modal
     const [cancelModal, setCancelModal] = useState<{ id: string; name: string } | null>(null);
     const [cancelReason, setCancelReason] = useState('');
 
@@ -106,7 +104,6 @@ export default function DashboardPage() {
         }
     };
 
-    // Mark completed
     const handleMarkCompleted = async (id: string) => {
         try {
             await api.patch(`/appointments/${id}/complete`);
@@ -119,7 +116,6 @@ export default function DashboardPage() {
         }
     };
 
-    // Manual booking state
     const [showBookingForm, setShowBookingForm] = useState(false);
     const [bookingForm, setBookingForm] = useState({
         customerName: '', customerPhone: '', customerEmail: '',
@@ -180,7 +176,6 @@ export default function DashboardPage() {
         }
     };
 
-    // Group appointments by date
     const groupedAppointments = useMemo(() => {
         const groups: Record<string, Appointment[]> = {};
         for (const apt of appointments) {
@@ -212,8 +207,28 @@ export default function DashboardPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen">
-                <LoadingSpinner size="lg" className="min-h-screen" />
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+                {/* Skeleton stat cards */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+                    {[1, 2, 3, 4].map(i => (
+                        <div key={i} className="card !p-5">
+                            <div className="skeleton h-3 w-16 mb-3" />
+                            <div className="skeleton h-7 w-24 mb-2" />
+                            <div className="skeleton h-2.5 w-20" />
+                        </div>
+                    ))}
+                </div>
+                {/* Skeleton table */}
+                <div className="card">
+                    <div className="skeleton h-5 w-32 mb-5" />
+                    {[1, 2, 3, 4, 5].map(i => (
+                        <div key={i} className="flex items-center gap-4 py-3">
+                            <div className="skeleton h-4 w-14" />
+                            <div className="skeleton h-4 flex-1" />
+                            <div className="skeleton h-6 w-20 rounded-full" />
+                        </div>
+                    ))}
+                </div>
             </div>
         );
     }
@@ -227,91 +242,91 @@ export default function DashboardPage() {
                 {/* Revenue Cards */}
                 {stats && (
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-                        <div className="card !p-4 sm:!p-5">
-                            <div className="flex items-center justify-between mb-2">
-                                <p className="text-xs sm:text-sm font-semibold text-slate-500">Today</p>
-                                <div className="w-8 h-8 sm:w-9 sm:h-9 bg-emerald-100 rounded-lg flex items-center justify-center">
-                                    <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
+                        <div className="card !p-5">
+                            <div className="flex items-center justify-between mb-3">
+                                <p className="text-xs font-medium text-slate-500">Today</p>
+                                <div className="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center">
+                                    <DollarSign className="w-4 h-4 text-emerald-600" />
                                 </div>
                             </div>
-                            <p className="text-xl sm:text-2xl font-bold text-slate-800">৳{stats.revenue.daily.toLocaleString()}</p>
+                            <p className="text-2xl font-bold text-slate-900">৳{stats.revenue.daily.toLocaleString()}</p>
                             <p className="text-xs text-slate-400 mt-1">{stats.appointments.today} booking{stats.appointments.today !== 1 ? 's' : ''}</p>
                         </div>
 
-                        <div className="card !p-4 sm:!p-5">
-                            <div className="flex items-center justify-between mb-2">
-                                <p className="text-xs sm:text-sm font-semibold text-slate-500">This Month</p>
-                                <div className="w-8 h-8 sm:w-9 sm:h-9 bg-blue-100 rounded-lg flex items-center justify-center">
-                                    <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+                        <div className="card !p-5">
+                            <div className="flex items-center justify-between mb-3">
+                                <p className="text-xs font-medium text-slate-500">This Month</p>
+                                <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                                    <TrendingUp className="w-4 h-4 text-blue-600" />
                                 </div>
                             </div>
-                            <p className="text-xl sm:text-2xl font-bold text-slate-800">৳{stats.revenue.monthly.toLocaleString()}</p>
+                            <p className="text-2xl font-bold text-slate-900">৳{stats.revenue.monthly.toLocaleString()}</p>
                             <p className="text-xs text-slate-400 mt-1">{stats.appointments.confirmed} confirmed</p>
                         </div>
 
-                        <div className="card !p-4 sm:!p-5">
-                            <div className="flex items-center justify-between mb-2">
-                                <p className="text-xs sm:text-sm font-semibold text-slate-500">This Year</p>
-                                <div className="w-8 h-8 sm:w-9 sm:h-9 bg-purple-100 rounded-lg flex items-center justify-center">
-                                    <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
+                        <div className="card !p-5">
+                            <div className="flex items-center justify-between mb-3">
+                                <p className="text-xs font-medium text-slate-500">This Year</p>
+                                <div className="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center">
+                                    <Calendar className="w-4 h-4 text-purple-600" />
                                 </div>
                             </div>
-                            <p className="text-xl sm:text-2xl font-bold text-slate-800">৳{stats.revenue.yearly.toLocaleString()}</p>
+                            <p className="text-2xl font-bold text-slate-900">৳{stats.revenue.yearly.toLocaleString()}</p>
                             <p className="text-xs text-slate-400 mt-1">{stats.appointments.total} total</p>
                         </div>
 
-                        <div className="card !p-4 sm:!p-5">
-                            <div className="flex items-center justify-between mb-2">
-                                <p className="text-xs sm:text-sm font-semibold text-slate-500">Status</p>
-                                <div className="w-8 h-8 sm:w-9 sm:h-9 bg-amber-100 rounded-lg flex items-center justify-center">
-                                    <Users className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
+                        <div className="card !p-5">
+                            <div className="flex items-center justify-between mb-3">
+                                <p className="text-xs font-medium text-slate-500">Status</p>
+                                <div className="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center">
+                                    <Users className="w-4 h-4 text-amber-600" />
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2 text-xs sm:text-sm mt-1 flex-wrap">
-                                <span className="flex items-center gap-1">
+                            <div className="flex items-center gap-3 text-xs mt-1 flex-wrap">
+                                <span className="flex items-center gap-1.5">
                                     <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                                    <span className="font-semibold text-slate-700">{stats.appointments.confirmed}</span>
+                                    <span className="font-medium text-slate-600">{stats.appointments.confirmed}</span>
                                 </span>
-                                <span className="flex items-center gap-1">
+                                <span className="flex items-center gap-1.5">
                                     <span className="w-2 h-2 rounded-full bg-blue-500" />
-                                    <span className="font-semibold text-slate-700">{stats.appointments.completed || 0}</span>
+                                    <span className="font-medium text-slate-600">{stats.appointments.completed || 0}</span>
                                 </span>
-                                <span className="flex items-center gap-1">
+                                <span className="flex items-center gap-1.5">
                                     <span className="w-2 h-2 rounded-full bg-amber-500" />
-                                    <span className="font-semibold text-slate-700">{stats.appointments.pending}</span>
+                                    <span className="font-medium text-slate-600">{stats.appointments.pending}</span>
                                 </span>
-                                <span className="flex items-center gap-1">
+                                <span className="flex items-center gap-1.5">
                                     <span className="w-2 h-2 rounded-full bg-red-500" />
-                                    <span className="font-semibold text-slate-700">{stats.appointments.cancelled}</span>
+                                    <span className="font-medium text-slate-600">{stats.appointments.cancelled}</span>
                                 </span>
                             </div>
-                            <p className="text-[10px] text-slate-400 mt-1.5 flex gap-1.5 flex-wrap">
+                            <p className="text-[10px] text-slate-400 mt-2 flex gap-2 flex-wrap">
                                 <span>Confirmed</span><span>Done</span><span>Pending</span><span>Cancelled</span>
                             </p>
                         </div>
                     </div>
                 )}
 
-                {/* Running Appointments - Today's Active */}
+                {/* Running Appointments */}
                 {runningAppointments.length > 0 && (
                     <div className="mb-6">
                         <div className="flex items-center gap-2 mb-3">
-                            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                            <h2 className="text-sm font-bold text-slate-700">Today&apos;s Active Appointments</h2>
+                            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            <h2 className="text-sm font-semibold text-slate-700">Active Now</h2>
                             <span className="text-xs text-slate-400">({runningAppointments.length})</span>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                             {runningAppointments.map(apt => (
-                                <div key={apt.id} className="card !p-4 border-l-4 border-l-green-500">
+                                <div key={apt.id} className="card !p-4 border-l-4 !border-l-emerald-500">
                                     <div className="flex items-start justify-between">
                                         <div>
-                                            <p className="text-sm font-bold text-slate-800">{apt.customerName}</p>
+                                            <p className="text-sm font-semibold text-slate-800">{apt.customerName}</p>
                                             <div className="flex items-center gap-2 mt-1">
-                                                <span className="text-xs font-semibold text-green-700 bg-green-50 px-2 py-0.5 rounded-full">
+                                                <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
                                                     {apt.startTime} - {apt.endTime}
                                                 </span>
                                                 {apt.price > 0 && (
-                                                    <span className="text-xs font-semibold text-slate-600">৳{apt.price}</span>
+                                                    <span className="text-xs font-medium text-slate-500">৳{apt.price}</span>
                                                 )}
                                             </div>
                                             {apt.customerPhone && (
@@ -321,7 +336,7 @@ export default function DashboardPage() {
                                         <div className="flex gap-1">
                                             <button
                                                 onClick={() => handleMarkCompleted(apt.id)}
-                                                className="p-1.5 text-green-500 hover:bg-green-50 rounded-lg transition-colors"
+                                                className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
                                                 title="Mark as completed"
                                             >
                                                 <CheckCheck className="w-4 h-4" />
@@ -343,27 +358,32 @@ export default function DashboardPage() {
 
                 {/* Booking Link */}
                 {tenant?.subdomain && (
-                    <div className="card !p-4 mb-6 bg-gradient-to-r from-primary-600 to-secondary-600 text-white">
+                    <div className="card !p-4 mb-6 !bg-slate-900 !border-slate-800 text-white">
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                            <div>
-                                <p className="text-sm font-semibold text-white/80">Your Booking Page</p>
-                                <p className="text-sm text-white/60 font-mono mt-0.5">{getBookingUrl()}</p>
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <Link2 className="w-4 h-4 text-white/60" />
+                                </div>
+                                <div>
+                                    <p className="text-xs font-medium text-white/50">Your Booking Page</p>
+                                    <p className="text-sm text-white/80 font-mono">{getBookingUrl()}</p>
+                                </div>
                             </div>
                             <div className="flex gap-2 w-full sm:w-auto">
                                 <button
                                     onClick={handleCopyLink}
-                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-all"
+                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3.5 py-2 bg-white/10 hover:bg-white/15 rounded-lg text-sm font-medium transition-all"
                                 >
-                                    {linkCopied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                    {linkCopied ? <CheckCircle className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                                     {linkCopied ? 'Copied!' : 'Copy'}
                                 </button>
                                 <a
                                     href={getBookingUrl()}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-center justify-center gap-2 px-4 py-2 bg-white text-primary-700 rounded-lg text-sm font-semibold hover:bg-slate-50 transition-all"
+                                    className="flex items-center justify-center gap-2 px-3.5 py-2 bg-white text-slate-900 rounded-lg text-sm font-semibold hover:bg-slate-100 transition-all"
                                 >
-                                    <ExternalLink className="w-4 h-4" />
+                                    <ExternalLink className="w-3.5 h-3.5" />
                                     <span className="hidden sm:inline">Visit</span>
                                 </a>
                             </div>
@@ -375,10 +395,10 @@ export default function DashboardPage() {
                 <div className="card">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5">
                         <div className="flex items-center gap-3">
-                            <h2 className="text-lg sm:text-xl font-bold text-slate-800">Appointments</h2>
+                            <h2 className="text-base font-semibold text-slate-800">Appointments</h2>
                             <button
                                 onClick={() => setShowBookingForm(true)}
-                                className="flex items-center gap-1.5 px-3 py-1.5 bg-primary-600 text-white text-xs font-semibold rounded-lg hover:bg-primary-700 transition-all"
+                                className="flex items-center gap-1.5 px-3 py-1.5 bg-primary-600 text-white text-xs font-medium rounded-lg hover:bg-primary-700 active:scale-[0.98] transition-all"
                             >
                                 <UserPlus className="w-3.5 h-3.5" />
                                 Book Slot
@@ -409,7 +429,7 @@ export default function DashboardPage() {
                             {dateFilter && (
                                 <button
                                     onClick={() => setDateFilter('')}
-                                    className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                                    className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg transition-colors"
                                     title="Clear date filter"
                                 >
                                     <XCircle className="w-4 h-4" />
@@ -419,11 +439,13 @@ export default function DashboardPage() {
                     </div>
 
                     {appointments.length === 0 ? (
-                        <div className="text-center py-12">
-                            <Calendar className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                            <p className="text-slate-500 font-medium">No appointments found</p>
+                        <div className="text-center py-16">
+                            <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <Calendar className="w-7 h-7 text-slate-400" />
+                            </div>
+                            <p className="text-slate-600 font-medium">No appointments found</p>
                             <p className="text-slate-400 text-sm mt-1">
-                                {statusFilter || dateFilter ? 'Try changing your filters' : 'Set up schedules to start accepting bookings'}
+                                {statusFilter || dateFilter ? 'Try changing your filters' : 'Set up schedules and share your booking link to get started'}
                             </p>
                         </div>
                     ) : (
@@ -435,20 +457,20 @@ export default function DashboardPage() {
                                         <div key={dateKey}>
                                             <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
                                                 <div className="flex items-center gap-2">
-                                                    <CalendarDays className="w-4 h-4 text-primary-500" />
-                                                    <h3 className="text-sm font-bold text-slate-700">{formatDate(dateKey)}</h3>
+                                                    <CalendarDays className="w-4 h-4 text-slate-400" />
+                                                    <h3 className="text-sm font-semibold text-slate-700">{formatDate(dateKey)}</h3>
                                                     <span className="text-xs text-slate-400">
                                                         {dayAppointments.length} appointment{dayAppointments.length !== 1 ? 's' : ''}
                                                     </span>
                                                 </div>
                                                 {dayRev > 0 && (
-                                                    <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+                                                    <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">
                                                         ৳{dayRev.toLocaleString()}
                                                     </span>
                                                 )}
                                             </div>
 
-                                            <div className="space-y-2">
+                                            <div className="space-y-1.5">
                                                 {dayAppointments
                                                     .sort((a, b) => a.startTime.localeCompare(b.startTime))
                                                     .map((apt) => {
@@ -459,17 +481,17 @@ export default function DashboardPage() {
                                                         return (
                                                             <div
                                                                 key={apt.id}
-                                                                className="flex items-center gap-3 p-3 rounded-xl border border-slate-100 hover:border-primary-200 bg-white transition-all group"
+                                                                className="flex items-center gap-3 p-3 rounded-xl border border-slate-100 hover:border-slate-200 bg-white transition-all group"
                                                             >
-                                                                <div className="text-center min-w-[60px]">
-                                                                    <p className="text-sm font-bold text-slate-800">{apt.startTime}</p>
+                                                                <div className="text-center min-w-[56px]">
+                                                                    <p className="text-sm font-semibold text-slate-800">{apt.startTime}</p>
                                                                     <p className="text-[10px] text-slate-400">{apt.endTime}</p>
                                                                 </div>
 
-                                                                <div className="w-px h-10 bg-slate-200" />
+                                                                <div className="w-px h-8 bg-slate-100" />
 
                                                                 <div className="flex-1 min-w-0">
-                                                                    <p className="text-sm font-semibold text-slate-800 truncate">{apt.customerName}</p>
+                                                                    <p className="text-sm font-medium text-slate-800 truncate">{apt.customerName}</p>
                                                                     <div className="flex items-center gap-2 text-xs text-slate-400">
                                                                         {apt.customerPhone && <span>{apt.customerPhone}</span>}
                                                                         {apt.customerEmail && <span className="hidden sm:inline truncate">{apt.customerEmail}</span>}
@@ -477,17 +499,16 @@ export default function DashboardPage() {
                                                                 </div>
 
                                                                 {apt.price > 0 && (
-                                                                    <span className="text-sm font-bold text-slate-700 hidden sm:block">৳{apt.price}</span>
+                                                                    <span className="text-sm font-semibold text-slate-600 hidden sm:block">৳{apt.price}</span>
                                                                 )}
 
                                                                 <StatusBadge status={apt.status} />
 
-                                                                {/* Actions */}
                                                                 <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                                                                     {canComplete && (
                                                                         <button
                                                                             onClick={() => handleMarkCompleted(apt.id)}
-                                                                            className="p-1.5 text-slate-300 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                                                                            className="p-1.5 text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
                                                                             title="Mark as completed"
                                                                         >
                                                                             <CheckCheck className="w-4 h-4" />
@@ -535,7 +556,7 @@ export default function DashboardPage() {
                                         >
                                             <ChevronLeft className="w-4 h-4" />
                                         </button>
-                                        <span className="text-xs font-semibold text-slate-600 px-3">
+                                        <span className="text-xs font-medium text-slate-600 px-3">
                                             {pagination.page} / {pagination.totalPages}
                                         </span>
                                         <button
@@ -555,11 +576,11 @@ export default function DashboardPage() {
 
             {/* Manual Booking Modal */}
             {showBookingForm && (
-                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-bold text-slate-800">Book a Slot</h3>
-                            <button onClick={() => { setShowBookingForm(false); setAvailableSlots([]); }} className="p-1 hover:bg-slate-100 rounded-lg">
+                <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl shadow-float w-full max-w-lg p-6 animate-scale-in">
+                        <div className="flex items-center justify-between mb-5">
+                            <h3 className="text-base font-semibold text-slate-800">Book a Slot</h3>
+                            <button onClick={() => { setShowBookingForm(false); setAvailableSlots([]); }} className="p-1.5 hover:bg-slate-50 rounded-lg transition-colors">
                                 <XCircle className="w-5 h-5 text-slate-400" />
                             </button>
                         </div>
@@ -594,8 +615,8 @@ export default function DashboardPage() {
                             )}
                             <textarea placeholder="Notes (optional)" value={bookingForm.notes} onChange={e => setBookingForm(f => ({ ...f, notes: e.target.value }))} className="input-field w-full h-16 resize-none" />
                             <div className="flex items-center justify-end space-x-2 pt-2">
-                                <button type="button" onClick={() => { setShowBookingForm(false); setAvailableSlots([]); }} className="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-all">Cancel</button>
-                                <button type="submit" disabled={bookingLoading || !bookingForm.startTime} className="px-4 py-2 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-all disabled:opacity-50">{bookingLoading ? 'Booking...' : 'Confirm Booking'}</button>
+                                <button type="button" onClick={() => { setShowBookingForm(false); setAvailableSlots([]); }} className="px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-lg transition-all">Cancel</button>
+                                <button type="submit" disabled={bookingLoading || !bookingForm.startTime} className="btn-primary !text-sm !px-4 !py-2 disabled:opacity-50">{bookingLoading ? 'Booking...' : 'Confirm Booking'}</button>
                             </div>
                         </form>
                     </div>
@@ -604,16 +625,16 @@ export default function DashboardPage() {
 
             {/* Cancel Reason Modal */}
             {cancelModal && (
-                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
-                        <h3 className="text-lg font-bold text-slate-800 mb-1">Cancel Appointment</h3>
+                <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl shadow-float w-full max-w-md p-6 animate-scale-in">
+                        <h3 className="text-base font-semibold text-slate-800 mb-1">Cancel Appointment</h3>
                         <p className="text-sm text-slate-500 mb-4">
                             Cancelling appointment for <strong>{cancelModal.name}</strong>
                         </p>
                         <textarea value={cancelReason} onChange={e => setCancelReason(e.target.value)} placeholder="Reason for cancellation (optional but recommended)" className="input-field w-full h-24 resize-none mb-4" />
                         <div className="flex items-center justify-end space-x-2">
-                            <button onClick={() => setCancelModal(null)} className="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-all">Keep Appointment</button>
-                            <button onClick={submitCancel} className="px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all">Cancel Appointment</button>
+                            <button onClick={() => setCancelModal(null)} className="px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-lg transition-all">Keep Appointment</button>
+                            <button onClick={submitCancel} className="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 active:scale-[0.98] transition-all">Cancel Appointment</button>
                         </div>
                     </div>
                 </div>

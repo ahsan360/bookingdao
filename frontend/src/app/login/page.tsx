@@ -36,7 +36,6 @@ export default function LoginPage() {
 
             login(response.data.token, response.data.user, response.data.tenant);
 
-            // If user hasn't completed onboarding, redirect there
             if (!response.data.user.hasCompletedOnboarding || !response.data.tenant) {
                 router.push('/onboarding');
             } else {
@@ -50,50 +49,51 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-4 py-8">
-            <div className="w-full max-w-md">
-                <div className="text-center mb-6 animate-fade-in">
-                    <Link href="/" className="inline-flex items-center space-x-2 mb-4">
-                        <Calendar className="w-9 h-9 text-primary-600" />
-                        <span className="text-2xl font-bold gradient-text">BookEase</span>
+        <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-slate-50">
+            <div className="w-full max-w-sm">
+                <div className="text-center mb-8">
+                    <Link href="/" className="inline-flex items-center space-x-2 mb-6">
+                        <div className="w-9 h-9 bg-primary-600 rounded-xl flex items-center justify-center">
+                            <Calendar className="w-5 h-5 text-white" />
+                        </div>
+                        <span className="text-xl font-bold text-slate-900">BookEase</span>
                     </Link>
-                    <h1 className="text-2xl font-bold text-slate-800 mb-1">Welcome Back</h1>
-                    <p className="text-sm text-slate-600">Sign in to manage your bookings</p>
+                    <h1 className="text-2xl font-bold text-slate-900">Welcome back</h1>
+                    <p className="text-sm text-slate-500 mt-1">Sign in to manage your bookings</p>
                 </div>
 
-                <div className="card animate-slide-up">
+                <div className="card">
                     {error && (
-                        <div className="mb-4 p-3 bg-red-50 border-2 border-red-200 rounded-lg text-red-700 text-sm">
+                        <div className="mb-4 p-3 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm">
                             {error}
                         </div>
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        {/* Login method toggle */}
                         <div>
                             <div className="flex rounded-xl bg-slate-100 p-1">
                                 <button
                                     type="button"
                                     onClick={() => setLoginMethod('phone')}
-                                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition-all ${
                                         loginMethod === 'phone'
-                                            ? 'bg-white text-primary-700 shadow-sm'
+                                            ? 'bg-white text-slate-900 shadow-sm'
                                             : 'text-slate-500 hover:text-slate-700'
                                     }`}
                                 >
-                                    <Phone className="w-4 h-4" />
+                                    <Phone className="w-3.5 h-3.5" />
                                     Phone
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setLoginMethod('email')}
-                                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition-all ${
                                         loginMethod === 'email'
-                                            ? 'bg-white text-primary-700 shadow-sm'
+                                            ? 'bg-white text-slate-900 shadow-sm'
                                             : 'text-slate-500 hover:text-slate-700'
                                     }`}
                                 >
-                                    <Mail className="w-4 h-4" />
+                                    <Mail className="w-3.5 h-3.5" />
                                     Email
                                 </button>
                             </div>
@@ -128,8 +128,8 @@ export default function LoginPage() {
                         )}
 
                         <div>
-                            <div className="flex items-center justify-between mb-1">
-                                <label className="label mb-0">Password</label>
+                            <div className="flex items-center justify-between mb-1.5">
+                                <label className="label !mb-0">Password</label>
                                 <Link href="/forgot-password" className="text-xs text-primary-600 hover:text-primary-700 font-medium">
                                     Forgot password?
                                 </Link>
@@ -153,8 +153,8 @@ export default function LoginPage() {
                         </button>
                     </form>
 
-                    <div className="mt-5 text-center">
-                        <p className="text-sm text-slate-600">
+                    <div className="mt-6 text-center">
+                        <p className="text-sm text-slate-500">
                             Don&apos;t have an account?{' '}
                             <Link href="/register" className="text-primary-600 font-semibold hover:text-primary-700">
                                 Sign up

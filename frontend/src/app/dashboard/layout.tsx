@@ -13,21 +13,40 @@ interface NavItem {
     href: string;
     label: string;
     icon: any;
-    color?: string;
     ownerOnly?: boolean;
 }
 
-const NAV_ITEMS: NavItem[] = [
-    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: 'text-primary-600' },
-    { href: '/dashboard/calendar', label: 'Calendar', icon: CalendarDays, color: 'text-blue-600' },
-    { href: '/dashboard/schedules', label: 'Schedules', icon: Clock, color: 'text-indigo-600' },
-    { href: '/dashboard/sales', label: 'Sales', icon: TrendingUp, color: 'text-emerald-600' },
-    { href: '/dashboard/page-editor', label: 'My Page', icon: FileEdit, color: 'text-pink-600' },
-    { href: '/dashboard/customers', label: 'Customers', icon: Contact, color: 'text-cyan-600' },
-    { href: '/dashboard/campaigns', label: 'Campaigns', icon: Megaphone, color: 'text-orange-600' },
-    { href: '/dashboard/team', label: 'Team', icon: Users, color: 'text-violet-600', ownerOnly: true },
-    { href: '/dashboard/audit-log', label: 'Audit Log', icon: FileText, color: 'text-amber-600', ownerOnly: true },
-    { href: '/dashboard/settings', label: 'Settings', icon: Settings, color: 'text-slate-600', ownerOnly: true },
+interface NavGroup {
+    label: string;
+    items: NavItem[];
+}
+
+const NAV_GROUPS: NavGroup[] = [
+    {
+        label: 'Overview',
+        items: [
+            { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+            { href: '/dashboard/calendar', label: 'Calendar', icon: CalendarDays },
+        ],
+    },
+    {
+        label: 'Business',
+        items: [
+            { href: '/dashboard/schedules', label: 'Schedules', icon: Clock },
+            { href: '/dashboard/sales', label: 'Sales', icon: TrendingUp },
+            { href: '/dashboard/customers', label: 'Customers', icon: Contact },
+            { href: '/dashboard/campaigns', label: 'Campaigns', icon: Megaphone },
+        ],
+    },
+    {
+        label: 'Settings',
+        items: [
+            { href: '/dashboard/page-editor', label: 'My Page', icon: FileEdit },
+            { href: '/dashboard/team', label: 'Team', icon: Users, ownerOnly: true },
+            { href: '/dashboard/audit-log', label: 'Audit Log', icon: FileText, ownerOnly: true },
+            { href: '/dashboard/settings', label: 'Settings', icon: Settings, ownerOnly: true },
+        ],
+    },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -36,7 +55,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     const { user, tenant, isOwner, isAuthenticated, hasCompletedOnboarding, loading, logout } = useAuth();
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    // Redirect to onboarding if not completed
     useEffect(() => {
         if (!loading && isAuthenticated && !hasCompletedOnboarding) {
             router.push('/onboarding');
@@ -46,52 +64,45 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         }
     }, [loading, isAuthenticated, hasCompletedOnboarding, router]);
 
-    const filteredNavItems = NAV_ITEMS.filter(item =>
-        !item.ownerOnly || isOwner
-    );
-
     const isActive = (href: string) => {
         if (href === '/dashboard') return pathname === '/dashboard';
         return pathname.startsWith(href);
     };
 
-    // Show nothing while auth is loading
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-pulse-slow text-primary-600">
-                    <Calendar className="w-16 h-16" />
-                </div>
+            <div className="min-h-screen flex items-center justify-center bg-slate-50">
+                <div className="w-8 h-8 border-2 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
+        <div className="min-h-screen bg-slate-50">
             {/* Mobile overlay */}
             {sidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 lg:hidden"
+                    className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 lg:hidden"
                     onClick={() => setSidebarOpen(false)}
                 />
             )}
 
             {/* Sidebar */}
             <aside className={`
-                fixed top-0 left-0 h-full w-64 bg-white/95 backdrop-blur-xl border-r border-slate-200/60
-                shadow-lg z-50 transform transition-transform duration-200 ease-out
+                fixed top-0 left-0 h-full w-64 bg-white border-r border-slate-200
+                z-50 transform transition-transform duration-200 ease-out
                 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-                lg:translate-x-0 lg:shadow-none
+                lg:translate-x-0
             `}>
                 {/* Logo */}
-                <div className="p-5 border-b border-slate-100">
+                <div className="px-5 py-5 border-b border-slate-100">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2.5">
-                            <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center">
-                                <Calendar className="w-5 h-5 text-white" />
+                            <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
+                                <Calendar className="w-4 h-4 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-base font-bold gradient-text leading-tight">BookEase</h1>
+                                <h1 className="text-sm font-bold text-slate-900 leading-tight">BookEase</h1>
                                 <p className="text-[11px] text-slate-400 truncate max-w-[140px]">{tenant?.businessName}</p>
                             </div>
                         </div>
@@ -104,35 +115,49 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     </div>
                 </div>
 
-                {/* Nav Items */}
-                <nav className="p-3 space-y-0.5 flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 160px)' }}>
-                    {filteredNavItems.map(item => {
-                        const Icon = item.icon;
-                        const active = isActive(item.href);
+                {/* Nav Groups */}
+                <nav className="px-3 py-4 space-y-5 flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 160px)' }}>
+                    {NAV_GROUPS.map(group => {
+                        const visibleItems = group.items.filter(item => !item.ownerOnly || isOwner);
+                        if (visibleItems.length === 0) return null;
+
                         return (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                onClick={() => setSidebarOpen(false)}
-                                className={`
-                                    flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
-                                    ${active
-                                        ? 'bg-primary-50 text-primary-700 shadow-sm'
-                                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800'
-                                    }
-                                `}
-                            >
-                                <Icon className={`w-[18px] h-[18px] ${active ? 'text-primary-600' : item.color || 'text-slate-400'}`} />
-                                <span>{item.label}</span>
-                            </Link>
+                            <div key={group.label}>
+                                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest px-3 mb-1.5">
+                                    {group.label}
+                                </p>
+                                <div className="space-y-0.5">
+                                    {visibleItems.map(item => {
+                                        const Icon = item.icon;
+                                        const active = isActive(item.href);
+                                        return (
+                                            <Link
+                                                key={item.href}
+                                                href={item.href}
+                                                onClick={() => setSidebarOpen(false)}
+                                                className={`
+                                                    flex items-center space-x-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all
+                                                    ${active
+                                                        ? 'bg-primary-50 text-primary-700'
+                                                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800'
+                                                    }
+                                                `}
+                                            >
+                                                <Icon className={`w-4 h-4 ${active ? 'text-primary-600' : 'text-slate-400'}`} />
+                                                <span>{item.label}</span>
+                                            </Link>
+                                        );
+                                    })}
+                                </div>
+                            </div>
                         );
                     })}
                 </nav>
 
                 {/* User info + Logout */}
-                <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-slate-100 bg-white/90">
+                <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-slate-100 bg-white">
                     <div className="flex items-center space-x-2.5 px-3 py-2 mb-1">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white text-xs font-bold">
+                        <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-bold">
                             {user?.name?.charAt(0).toUpperCase() || '?'}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -142,9 +167,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     </div>
                     <button
                         onClick={logout}
-                        className="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 w-full transition-all"
+                        className="flex items-center space-x-2.5 px-3 py-2 rounded-lg text-[13px] font-medium text-slate-500 hover:bg-red-50 hover:text-red-600 w-full transition-all"
                     >
-                        <LogOut className="w-[18px] h-[18px]" />
+                        <LogOut className="w-4 h-4" />
                         <span>Logout</span>
                     </button>
                 </div>
@@ -153,17 +178,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {/* Main content area */}
             <div className="lg:pl-64">
                 {/* Top bar (mobile) */}
-                <header className="sticky top-0 z-30 glass border-b border-white/20 lg:hidden">
+                <header className="sticky top-0 z-30 bg-white border-b border-slate-200 lg:hidden">
                     <div className="px-4 py-3 flex items-center justify-between">
                         <button
                             onClick={() => setSidebarOpen(true)}
-                            className="p-2 rounded-lg hover:bg-white/50"
+                            className="p-2 rounded-lg hover:bg-slate-50"
                         >
                             <Menu className="w-5 h-5 text-slate-600" />
                         </button>
                         <div className="flex items-center space-x-2">
-                            <Calendar className="w-5 h-5 text-primary-600" />
-                            <span className="text-sm font-bold gradient-text">BookEase</span>
+                            <div className="w-6 h-6 bg-primary-600 rounded-md flex items-center justify-center">
+                                <Calendar className="w-3.5 h-3.5 text-white" />
+                            </div>
+                            <span className="text-sm font-bold text-slate-900">BookEase</span>
                         </div>
                         <div className="w-9" />
                     </div>
