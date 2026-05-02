@@ -1,5 +1,6 @@
 'use client';
 
+import ProGate from '@/components/ProGate';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
@@ -27,6 +28,24 @@ const ACTION_COLORS: Record<string, string> = {
 };
 
 export default function AuditLogPage() {
+    return (
+        <ProGate
+            feature="auditLog"
+            title="Audit log"
+            description="A complete record of every change made in your workspace. Who did what, when, and to which resource — for compliance and accountability."
+            bullets={[
+                'Tracks every booking, schedule and team change',
+                'Filter by action, user, resource or date range',
+                'Tamper-evident log of all admin actions',
+                'Export-ready for compliance reviews',
+            ]}
+        >
+            <AuditLogInner />
+        </ProGate>
+    );
+}
+
+function AuditLogInner() {
     const router = useRouter();
     const [logs, setLogs] = useState<AuditEntry[]>([]);
     const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 50, total: 0, totalPages: 0 });
@@ -94,8 +113,8 @@ export default function AuditLogPage() {
 
         if (d.customerName) parts.push(`Customer: ${d.customerName}`);
         if (d.reason) parts.push(`Reason: ${d.reason}`);
-        if (d.price !== undefined) parts.push(`Price: ৳${d.price}`);
-        if (d.hadPayment) parts.push(`Had payment: ৳${d.paymentAmount}`);
+        if (d.price !== undefined) parts.push(`Price: $${d.price}`);
+        if (d.hadPayment) parts.push(`Had payment: $${d.paymentAmount}`);
         if (d.adminName) parts.push(`Admin: ${d.adminName}`);
         if (d.adminEmail) parts.push(`Email: ${d.adminEmail}`);
         if (d.removedName) parts.push(`Removed: ${d.removedName}`);

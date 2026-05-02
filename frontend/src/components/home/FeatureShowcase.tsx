@@ -48,17 +48,17 @@ export default function FeatureShowcase() {
             title: 'Your own customer-facing page',
             description:
                 'Get a shareable link with your logo, banner, gallery, and colors. Customers book you directly — no app downloads needed.',
-            highlights: ['Upload logo, banner & gallery', 'Custom brand colors', 'Direct link: yourname.bookease.com'],
+            highlights: ['Upload logo, banner & gallery', 'Custom brand colors', 'Direct link: yourname.bookingdeo.com'],
             accent: 'from-emerald-500 to-teal-600',
             mockup: <BookingPageMockup />,
         },
         {
             id: 'payments',
             badge: 'Secure Payments',
-            title: 'Accept payments with SSLCommerz',
+            title: 'Accept payments online',
             description:
-                'Integrated payment gateway with encrypted credentials, automatic booking confirmation, and 10-minute hold to prevent double bookings.',
-            highlights: ['SSLCommerz integration (Bangladesh)', 'Auto-confirm on successful payment', 'Slot locking to prevent conflicts'],
+                'Pluggable payment gateway with encrypted credentials, automatic booking confirmation, and 10-minute slot locking to prevent double bookings.',
+            highlights: ['Pluggable payment gateways', 'Auto-confirm on successful capture', 'Slot locking to prevent conflicts'],
             accent: 'from-amber-500 to-orange-600',
             mockup: <PaymentMockup />,
         },
@@ -104,16 +104,16 @@ export default function FeatureShowcase() {
     }, [next, isPaused]);
 
     return (
-        <section id="demo" className="py-20 sm:py-28 px-4 sm:px-6 bg-gradient-to-b from-slate-50 via-white to-slate-50 overflow-hidden">
+        <section id="demo" className="py-24 sm:py-32 px-4 sm:px-6 bg-gradient-to-b from-white via-ink-50/30 to-white overflow-hidden">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-14">
-                    <p className="text-sm font-semibold text-primary-600 uppercase tracking-wider mb-3">Product Tour</p>
-                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
-                        See the <span className="gradient-text">full flow</span> before you buy
+                    <p className="eyebrow mb-4">Product tour</p>
+                    <h2 className="text-4xl sm:text-5xl font-semibold tracking-[-0.03em] text-ink-900 text-balance mb-5">
+                        Every flow, <span className="gradient-text">end to end</span>
                     </h2>
-                    <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-                        Every feature you need to run a bookings business — designed to be beautiful and simple.
+                    <p className="text-lg text-ink-500 max-w-2xl mx-auto leading-relaxed">
+                        From scheduling to payments to customer records — every screen in the platform, designed and engineered.
                     </p>
                 </div>
 
@@ -123,7 +123,7 @@ export default function FeatureShowcase() {
                     onMouseEnter={() => setIsPaused(true)}
                     onMouseLeave={() => setIsPaused(false)}
                 >
-                    <div className="relative overflow-hidden rounded-3xl bg-white shadow-float border border-slate-200">
+                    <div className="relative overflow-hidden rounded-3xl bg-white shadow-elevated border border-ink-100">
                         <div
                             className="flex transition-transform duration-700 ease-in-out"
                             style={{ transform: `translateX(-${current * 100}%)` }}
@@ -244,7 +244,7 @@ function DashboardMockup() {
             <div className="flex items-center justify-between mb-5">
                 <div>
                     <p className="text-xs text-slate-400 font-medium">Welcome back</p>
-                    <p className="text-sm font-bold text-slate-900">Ahsan's Salon</p>
+                    <p className="text-sm font-bold text-slate-900">Acme Studio</p>
                 </div>
                 <div className="flex gap-1.5">
                     <div className="w-2 h-2 rounded-full bg-emerald-500" />
@@ -256,12 +256,12 @@ function DashboardMockup() {
                 <div className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl p-3">
                     <DollarSign className="w-4 h-4 text-primary-600 mb-1" />
                     <p className="text-[10px] text-slate-600">Today</p>
-                    <p className="text-base font-bold text-slate-900">৳4,200</p>
+                    <p className="text-base font-bold text-slate-900">$420</p>
                 </div>
                 <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-3">
                     <TrendingUp className="w-4 h-4 text-emerald-600 mb-1" />
                     <p className="text-[10px] text-slate-600">Month</p>
-                    <p className="text-base font-bold text-slate-900">৳87K</p>
+                    <p className="text-base font-bold text-slate-900">$8.7K</p>
                 </div>
                 <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-3">
                     <Calendar className="w-4 h-4 text-purple-600 mb-1" />
@@ -277,7 +277,7 @@ function DashboardMockup() {
             <div className="space-y-1.5">
                 {[
                     { name: 'Sarah Khan', time: '10:00 AM', status: 'Running' },
-                    { name: 'Rafiq Ahmed', time: '10:30 AM', status: 'Confirmed' },
+                    { name: 'Daniel Park', time: '10:30 AM', status: 'Confirmed' },
                     { name: 'Nadia Islam', time: '11:00 AM', status: 'Confirmed' },
                 ].map((apt, i) => (
                     <div key={i} className="flex items-center justify-between bg-slate-50 rounded-lg p-2.5">
@@ -367,8 +367,8 @@ function BookingPageMockup() {
                 <p className="text-[10px] text-slate-500 mb-3">Premium beauty treatments</p>
 
                 <div className="flex items-center gap-3 text-[10px] text-slate-600 mb-3">
-                    <span className="flex items-center gap-1"><Phone className="w-3 h-3" />+880 1700</span>
-                    <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />Dhaka</span>
+                    <span className="flex items-center gap-1"><Phone className="w-3 h-3" />+1 (415) 555</span>
+                    <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />New York</span>
                 </div>
 
                 <p className="text-[10px] font-semibold text-slate-700 mb-2">Select a date</p>
@@ -403,7 +403,7 @@ function BookingPageMockup() {
                 </div>
 
                 <button className="w-full mt-3 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-xs font-bold rounded-lg">
-                    Book Now — ৳1,500
+                    Book now — $90
                 </button>
             </div>
         </div>
@@ -417,8 +417,8 @@ function PaymentMockup() {
                 <div className="w-14 h-14 mx-auto rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center mb-2">
                     <CreditCard className="w-7 h-7 text-white" />
                 </div>
-                <p className="text-sm font-bold text-slate-900">Secure Payment</p>
-                <p className="text-[10px] text-slate-500">Powered by SSLCommerz</p>
+                <p className="text-sm font-bold text-slate-900">Secure payment</p>
+                <p className="text-[10px] text-slate-500">256-bit encrypted checkout</p>
             </div>
 
             <div className="bg-slate-50 rounded-xl p-3 mb-3 space-y-2">
@@ -432,12 +432,12 @@ function PaymentMockup() {
                 </div>
                 <div className="flex justify-between pt-2 border-t border-slate-200">
                     <span className="text-slate-900 font-semibold text-sm">Total</span>
-                    <span className="text-amber-600 font-bold text-lg">৳2,500</span>
+                    <span className="text-amber-600 font-bold text-lg">$120</span>
                 </div>
             </div>
 
             <div className="grid grid-cols-3 gap-1.5 mb-3">
-                {['Visa', 'MC', 'bKash', 'Nagad', 'Rocket', 'Card'].map((m) => (
+                {['Visa', 'MC', 'Amex', 'Apple Pay', 'Google', 'PayPal'].map((m) => (
                     <div key={m} className="bg-white border border-slate-200 rounded-lg py-2 text-center text-[10px] font-semibold text-slate-700">
                         {m}
                     </div>
@@ -450,7 +450,7 @@ function PaymentMockup() {
             </div>
 
             <button className="w-full py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-bold rounded-lg">
-                Pay ৳2,500 Securely
+                Pay $120 securely
             </button>
 
             <div className="flex items-center justify-center gap-1 mt-2 text-[9px] text-slate-500">
@@ -463,10 +463,10 @@ function PaymentMockup() {
 
 function CustomersMockup() {
     const customers = [
-        { name: 'Sarah Khan', phone: '+880 1711-223344', visits: 12, spent: '৳18,500', color: 'from-pink-400 to-rose-600' },
-        { name: 'Rafiq Ahmed', phone: '+880 1722-556677', visits: 8, spent: '৳12,000', color: 'from-blue-400 to-indigo-600' },
-        { name: 'Nadia Islam', phone: '+880 1733-889900', visits: 15, spent: '৳24,750', color: 'from-emerald-400 to-teal-600' },
-        { name: 'Farhan Chowdhury', phone: '+880 1744-112233', visits: 5, spent: '৳7,500', color: 'from-amber-400 to-orange-600' },
+        { name: 'Sarah Khan', phone: '+1 (415) 555-0142', visits: 12, spent: '$1,850', color: 'from-pink-400 to-rose-600' },
+        { name: 'Daniel Park', phone: '+1 (212) 555-0163', visits: 8, spent: '$1,200', color: 'from-blue-400 to-indigo-600' },
+        { name: 'Nadia Islam', phone: '+1 (650) 555-0184', visits: 15, spent: '$2,475', color: 'from-emerald-400 to-teal-600' },
+        { name: 'Marcus Johnson', phone: '+1 (312) 555-0125', visits: 5, spent: '$750', color: 'from-amber-400 to-orange-600' },
     ];
     return (
         <div className="bg-white rounded-2xl shadow-2xl p-4 border border-white/50">
@@ -511,7 +511,7 @@ function SalesMockup() {
                 </div>
                 <div className="text-right">
                     <p className="text-[10px] text-slate-500">Total Revenue</p>
-                    <p className="text-lg font-bold text-blue-600">৳124,500</p>
+                    <p className="text-lg font-bold text-blue-600">$12,450</p>
                 </div>
             </div>
 
@@ -523,12 +523,12 @@ function SalesMockup() {
                 </div>
                 <div className="bg-indigo-50 rounded-lg p-2">
                     <p className="text-[9px] text-slate-500">Avg/Day</p>
-                    <p className="text-sm font-bold text-slate-900">৳17.8K</p>
+                    <p className="text-sm font-bold text-slate-900">$1,780</p>
                     <p className="text-[9px] text-emerald-600 font-semibold">↑ 8%</p>
                 </div>
                 <div className="bg-purple-50 rounded-lg p-2">
                     <p className="text-[9px] text-slate-500">Per Booking</p>
-                    <p className="text-sm font-bold text-slate-900">৳1,500</p>
+                    <p className="text-sm font-bold text-slate-900">$150</p>
                     <p className="text-[9px] text-emerald-600 font-semibold">↑ 3%</p>
                 </div>
             </div>
@@ -566,7 +566,7 @@ function CampaignsMockup() {
                 <p className="text-xs font-semibold text-slate-900 mb-2">Weekend 20% Discount</p>
                 <p className="text-[10px] text-slate-500 mb-1">Message</p>
                 <p className="text-[11px] text-slate-700 leading-relaxed">
-                    Hi! Enjoy 20% off on all services this weekend. Book now at bookease.com/elegant-spa
+                    Hi! Enjoy 20% off on all services this weekend. Book now at elegant-spa.bookingdeo.com
                 </p>
                 <div className="flex justify-end mt-2 text-[9px] text-slate-400">142 / 160 chars</div>
             </div>

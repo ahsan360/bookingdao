@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { authenticate, AuthRequest } from '../../middleware/auth.middleware';
+import { requireProFeature } from '../../middleware/pro-feature.middleware';
 import { getTenantId } from '../../middleware/tenant.middleware';
 import { createAuditLog } from '../../utils/audit.util';
 import { prisma } from '../../lib/prisma';
@@ -8,6 +9,9 @@ import { getCustomerContacts } from '../../services/customer.service';
 import { parsePagination, buildPaginationMeta } from '../../utils/pagination.util';
 
 const router = Router();
+
+// All campaigns endpoints require auth + Pro feature
+router.use(authenticate, requireProFeature('campaigns'));
 
 /**
  * GET /api/admin/campaigns — list campaigns with pagination

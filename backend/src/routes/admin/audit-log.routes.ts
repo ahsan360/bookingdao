@@ -1,10 +1,14 @@
 import { Router, Response } from 'express';
 import { authenticate, AuthRequest } from '../../middleware/auth.middleware';
 import { requireOwner } from '../../middleware/role.middleware';
+import { requireProFeature } from '../../middleware/pro-feature.middleware';
 import { getTenantId } from '../../middleware/tenant.middleware';
 import { prisma } from '../../lib/prisma';
 
 const router = Router();
+
+// Audit log is a Pro feature; also requires owner role.
+router.use(authenticate, requireOwner, requireProFeature('auditLog'));
 
 /**
  * Get audit logs (owner only)

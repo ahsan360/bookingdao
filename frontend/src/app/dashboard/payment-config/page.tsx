@@ -4,8 +4,28 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Settings } from 'lucide-react';
 import PaymentConfigForm from '@/components/admin/PaymentConfigForm';
+import ProGate from '@/components/ProGate';
 
 export default function PaymentConfigPage() {
+    return (
+        <ProGate
+            feature="paymentGateway"
+            title="Online payments"
+            description="Collect payments upfront when customers book. Pluggable payment gateway with encrypted credentials, slot locking, and automatic confirmation on successful capture."
+            bullets={[
+                'Collect payments at booking time',
+                'Encrypted gateway credentials',
+                'Slot locking prevents double-bookings',
+                'Auto-confirm on successful payment',
+                'Refund handling for cancellations',
+            ]}
+        >
+            <PaymentConfigInner />
+        </ProGate>
+    );
+}
+
+function PaymentConfigInner() {
     const router = useRouter();
     const [tenant, setTenant] = useState<any>(null);
 

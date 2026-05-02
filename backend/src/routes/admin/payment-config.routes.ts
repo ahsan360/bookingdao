@@ -1,14 +1,15 @@
 import { Router, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { authenticate, AuthRequest } from '../../middleware/auth.middleware';
+import { requireProFeature } from '../../middleware/pro-feature.middleware';
 import { getTenantId } from '../../middleware/tenant.middleware';
 import { encrypt, decrypt } from '../../utils/encryption.util';
 import { prisma } from '../../lib/prisma';
 
 const router = Router();
 
-// All routes require authentication
-router.use(authenticate);
+// All routes require authentication and the paymentGateway Pro feature
+router.use(authenticate, requireProFeature('paymentGateway'));
 
 /**
  * Create or update payment gateway configuration

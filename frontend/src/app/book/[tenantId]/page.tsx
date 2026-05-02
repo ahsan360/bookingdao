@@ -15,9 +15,9 @@ export default function BookingPage() {
     const tenantId = params.tenantId as string;
     const [tenant, setTenant] = useState<Tenant | null>(null);
     const [selectedDate, setSelectedDate] = useState('');
-    const [availableSlots, setAvailableSlots] = useState<string[]>([]);
-    const [todaySlots, setTodaySlots] = useState<string[]>([]);
-    const [selectedSlot, setSelectedSlot] = useState('');
+    const [availableSlots, setAvailableSlots] = useState<{ time: string; price: number }[]>([]);
+    const [todaySlots, setTodaySlots] = useState<{ time: string; price: number }[]>([]);
+    const [selectedSlot, setSelectedSlot] = useState<{ time: string; price: number } | null>(null);
     const [customerData, setCustomerData] = useState({
         name: '',
         phone: '',
@@ -83,7 +83,8 @@ export default function BookingPage() {
                     customerName: customerData.name,
                     customerPhone: customerData.phone,
                     appointmentDate: selectedDate,
-                    startTime: selectedSlot,
+                    startTime: selectedSlot?.time,
+                    price: selectedSlot?.price || 0,
                 }
             );
             setConfirmed(true);
@@ -107,7 +108,10 @@ export default function BookingPage() {
                     <div className="mt-8 p-6 bg-slate-50 rounded-xl">
                         <p className="text-sm text-slate-600 mb-2">Appointment Details:</p>
                         <p className="font-semibold text-lg">{new Date(selectedDate).toLocaleDateString()}</p>
-                        <p className="text-primary-600 font-semibold text-xl">{selectedSlot}</p>
+                        <p className="text-primary-600 font-semibold text-xl">
+                            {selectedSlot?.time}
+                            {selectedSlot && selectedSlot.price > 0 && ` - $${selectedSlot.price}`}
+                        </p>
                     </div>
                     <button
                         onClick={() => window.location.reload()}
@@ -126,8 +130,10 @@ export default function BookingPage() {
             <div className="glass border-b border-white/20">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 text-center">
                     <div className="flex items-center justify-center space-x-2 mb-2">
-                        <Calendar className="w-6 h-6 sm:w-8 sm:h-8 text-primary-600" />
-                        <span className="text-xl sm:text-2xl font-bold gradient-text">BookEase</span>
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #635bff 0%, #8b5cf6 100%)' }}>
+                            <Calendar className="w-4 h-4 text-white" strokeWidth={2.5} />
+                        </div>
+                        <span className="text-xl sm:text-2xl font-semibold gradient-text tracking-tight">BookingDeo</span>
                     </div>
                     {tenant && <p className="text-sm sm:text-base text-slate-600">Book an appointment with {tenant.businessName}</p>}
                 </div>
@@ -168,15 +174,20 @@ export default function BookingPage() {
                                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
                                     {availableSlots.map((slot) => (
                                         <button
-                                            key={slot}
+                                            key={slot.time}
                                             type="button"
                                             onClick={() => setSelectedSlot(slot)}
-                                            className={`p-2 sm:p-3 rounded-lg border-2 font-semibold transition-all text-sm sm:text-base ${selectedSlot === slot
+                                            className={`p-2 sm:p-3 rounded-lg border-2 font-semibold transition-all text-sm sm:text-base ${selectedSlot?.time === slot.time
                                                 ? 'bg-primary-600 text-white border-primary-600'
                                                 : 'bg-white border-slate-200 hover:border-primary-300 text-slate-700'
                                                 }`}
                                         >
-                                            {slot}
+                                            <span className="block">{slot.time}</span>
+                                            {slot.price > 0 && (
+                                                <span className={`block text-xs mt-0.5 ${selectedSlot?.time === slot.time ? 'text-white/80' : 'text-primary-600'}`}>
+                                                    ${slot.price}
+                                                </span>
+                                            )}
                                         </button>
                                     ))}
                                 </div>

@@ -118,8 +118,10 @@ export default function OnboardingPage() {
             <div className="w-full max-w-md">
                 <div className="text-center mb-6 animate-fade-in">
                     <div className="inline-flex items-center space-x-2 mb-4">
-                        <Calendar className="w-9 h-9 text-primary-600" />
-                        <span className="text-2xl font-bold gradient-text">BookEase</span>
+                        <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #635bff 0%, #8b5cf6 100%)' }}>
+                            <Calendar className="w-5 h-5 text-white" strokeWidth={2.5} />
+                        </div>
+                        <span className="text-2xl font-semibold gradient-text tracking-tight">BookingDeo</span>
                     </div>
                     <h1 className="text-2xl font-bold text-slate-800 mb-1">Set Up Your Business</h1>
                     <p className="text-sm text-slate-600">

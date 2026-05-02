@@ -1,11 +1,15 @@
 import { Router, Response } from 'express';
 import { authenticate, AuthRequest } from '../../middleware/auth.middleware';
+import { requireProFeature } from '../../middleware/pro-feature.middleware';
 import { getTenantId } from '../../middleware/tenant.middleware';
 import { prisma } from '../../lib/prisma';
 import { getCustomersByTenant, filterCustomers, sortCustomers } from '../../services/customer.service';
 import { parsePagination, buildPaginationMeta } from '../../utils/pagination.util';
 
 const router = Router();
+
+// CRM is a Pro feature
+router.use(authenticate, requireProFeature('customerCRM'));
 
 /**
  * GET /api/admin/customers — paginated, searchable, sortable customer list

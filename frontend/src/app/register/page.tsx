@@ -80,10 +80,10 @@ export default function RegisterPage() {
             <div className="w-full max-w-sm">
                 <div className="text-center mb-8">
                     <Link href="/" className="inline-flex items-center space-x-2 mb-6">
-                        <div className="w-9 h-9 bg-primary-600 rounded-xl flex items-center justify-center">
-                            <Calendar className="w-5 h-5 text-white" />
+                        <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #635bff 0%, #8b5cf6 100%)' }}>
+                            <Calendar className="w-5 h-5 text-white" strokeWidth={2.5} />
                         </div>
-                        <span className="text-xl font-bold text-slate-900">BookEase</span>
+                        <span className="text-xl font-semibold text-slate-900 tracking-tight">BookingDeo</span>
                     </Link>
                     <h1 className="text-2xl font-bold text-slate-900">Create account</h1>
                     <p className="text-sm text-slate-500 mt-1">Start managing appointments today</p>

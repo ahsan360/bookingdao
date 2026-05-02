@@ -484,7 +484,7 @@ export default function CalendarPage() {
                                                                         <span className="capitalize">{slot.status}</span>
                                                                     </span>
                                                                 ) : slot.price > 0 ? (
-                                                                    <span className="text-xs font-bold text-slate-600">৳{slot.price}</span>
+                                                                    <span className="text-xs font-bold text-slate-600">${slot.price}</span>
                                                                 ) : (
                                                                     <span className="text-xs text-slate-400">Free</span>
                                                                 )}

@@ -9,6 +9,7 @@ import { useToast } from '@/components/useToast';
 import { useAuth } from '@/lib/auth';
 import api from '@/lib/api';
 import type { Campaign } from '@/types';
+import ProGate from '@/components/ProGate';
 
 interface CustomerStats {
     total: number;
@@ -17,6 +18,24 @@ interface CustomerStats {
 }
 
 export default function CampaignsPage() {
+    return (
+        <ProGate
+            feature="campaigns"
+            title="Marketing campaigns"
+            description="Bring customers back with targeted SMS and email blasts. Send promotional messages to your entire customer base in one click — track delivery, opens, and conversions."
+            bullets={[
+                'Bulk SMS and Email campaigns',
+                'Customer reach preview before sending',
+                'Delivery and failure tracking',
+                'Filter by customer segments',
+            ]}
+        >
+            <CampaignsPageInner />
+        </ProGate>
+    );
+}
+
+function CampaignsPageInner() {
     const { isOwner } = useAuth();
     const [campaigns, setCampaigns] = useState<Campaign[]>([]);
     const [customerStats, setCustomerStats] = useState<CustomerStats | null>(null);

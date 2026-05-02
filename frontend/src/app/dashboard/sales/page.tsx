@@ -8,10 +8,30 @@ import {
 import { useToast } from '@/components/useToast';
 import api from '@/lib/api';
 import type { SalesReport } from '@/types';
+import ProGate from '@/components/ProGate';
 
 type GroupType = 'daily' | 'weekly' | 'monthly';
 
 export default function SalesPage() {
+    return (
+        <ProGate
+            feature="salesAnalytics"
+            title="Sales analytics & reports"
+            description="See exactly what you're earning. Daily, weekly and monthly revenue breakdowns with interactive charts, growth trends and per-booking averages."
+            bullets={[
+                'Interactive revenue charts and growth percentages',
+                'Custom date range filtering',
+                'Daily, weekly and monthly breakdowns',
+                'Average revenue per booking',
+                'Export-ready reports (coming soon)',
+            ]}
+        >
+            <SalesPageInner />
+        </ProGate>
+    );
+}
+
+function SalesPageInner() {
     const [report, setReport] = useState<SalesReport | null>(null);
     const [loading, setLoading] = useState(true);
     const [group, setGroup] = useState<GroupType>('daily');
@@ -211,7 +231,7 @@ export default function SalesPage() {
                                     <p className="text-xs font-semibold text-slate-400 uppercase">Total Revenue</p>
                                     <DollarSign className="w-4 h-4 text-emerald-500" />
                                 </div>
-                                <p className="text-2xl sm:text-3xl font-bold text-slate-800">৳{report.grandTotal.toLocaleString()}</p>
+                                <p className="text-2xl sm:text-3xl font-bold text-slate-800">${report.grandTotal.toLocaleString()}</p>
                                 <p className="text-xs text-slate-400 mt-1">{dayCount} days</p>
                             </div>
 
@@ -229,7 +249,7 @@ export default function SalesPage() {
                                     <p className="text-xs font-semibold text-slate-400 uppercase">Avg / {group === 'daily' ? 'Day' : group === 'weekly' ? 'Week' : 'Month'}</p>
                                     <TrendingUp className="w-4 h-4 text-purple-500" />
                                 </div>
-                                <p className="text-2xl sm:text-3xl font-bold text-slate-800">৳{avgPerPeriod.toLocaleString()}</p>
+                                <p className="text-2xl sm:text-3xl font-bold text-slate-800">${avgPerPeriod.toLocaleString()}</p>
                                 <p className="text-xs text-slate-400 mt-1">{report.periods.length} period{report.periods.length !== 1 ? 's' : ''}</p>
                             </div>
 
@@ -239,7 +259,7 @@ export default function SalesPage() {
                                     <CalendarDays className="w-4 h-4 text-amber-500" />
                                 </div>
                                 <p className="text-2xl sm:text-3xl font-bold text-slate-800">
-                                    ৳{report.grandCount > 0 ? Math.round(report.grandTotal / report.grandCount).toLocaleString() : '0'}
+                                    ${report.grandCount > 0 ? Math.round(report.grandTotal / report.grandCount).toLocaleString() : '0'}
                                 </p>
                                 <p className="text-xs text-slate-400 mt-1">per appointment</p>
                             </div>
@@ -267,14 +287,14 @@ export default function SalesPage() {
                                                     >
                                                         {barWidth > 25 && (
                                                             <span className="text-[10px] text-white font-semibold pl-2">
-                                                                ৳{period.total.toLocaleString()}
+                                                                ${period.total.toLocaleString()}
                                                             </span>
                                                         )}
                                                     </div>
                                                     {barWidth <= 25 && period.total > 0 && (
                                                         <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-500 font-semibold"
                                                             style={{ left: `calc(${Math.max(barWidth, 2)}% + 8px)` }}>
-                                                            ৳{period.total.toLocaleString()}
+                                                            ${period.total.toLocaleString()}
                                                         </span>
                                                     )}
                                                 </div>
@@ -317,7 +337,7 @@ export default function SalesPage() {
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center gap-3">
-                                                        <span className="text-sm sm:text-base font-bold text-emerald-600">৳{period.total.toLocaleString()}</span>
+                                                        <span className="text-sm sm:text-base font-bold text-emerald-600">${period.total.toLocaleString()}</span>
                                                         {isExpanded ? (
                                                             <ChevronUp className="w-4 h-4 text-slate-400" />
                                                         ) : (
@@ -344,14 +364,14 @@ export default function SalesPage() {
                                                                     <div className="text-xs text-slate-400 hidden sm:block">
                                                                         {new Date(apt.appointmentDate).toLocaleDateString('en', { month: 'short', day: 'numeric' })}
                                                                     </div>
-                                                                    <span className="text-sm font-semibold text-slate-700">৳{apt.price}</span>
+                                                                    <span className="text-sm font-semibold text-slate-700">${apt.price}</span>
                                                                 </div>
                                                             ))}
                                                         </div>
                                                         {/* Period total footer */}
                                                         <div className="flex items-center justify-between px-4 py-2.5 bg-emerald-50 border-t border-emerald-100">
                                                             <span className="text-xs font-semibold text-emerald-700">Period Total</span>
-                                                            <span className="text-sm font-bold text-emerald-700">৳{period.total.toLocaleString()}</span>
+                                                            <span className="text-sm font-bold text-emerald-700">${period.total.toLocaleString()}</span>
                                                         </div>
                                                     </div>
                                                 )}
@@ -368,7 +388,7 @@ export default function SalesPage() {
                                         <p className="text-sm font-bold text-slate-800">Grand Total</p>
                                         <p className="text-xs text-slate-400">{report.grandCount} bookings in {report.periods.length} {group === 'daily' ? 'day' : group === 'weekly' ? 'week' : 'month'}{report.periods.length !== 1 ? 's' : ''}</p>
                                     </div>
-                                    <p className="text-xl sm:text-2xl font-bold text-emerald-600">৳{report.grandTotal.toLocaleString()}</p>
+                                    <p className="text-xl sm:text-2xl font-bold text-emerald-600">${report.grandTotal.toLocaleString()}</p>
                                 </div>
                             )}
                         </div>

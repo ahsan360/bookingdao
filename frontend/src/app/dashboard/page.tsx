@@ -239,6 +239,22 @@ export default function DashboardPage() {
             {ConfirmDialogComponent}
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+                {/* Page header */}
+                <div className="flex items-end justify-between mb-7">
+                    <div>
+                        <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight">
+                            {(() => {
+                                const h = new Date().getHours();
+                                const greet = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+                                return `${greet}${user?.name ? `, ${user.name.split(' ')[0]}` : ''}`;
+                            })()}
+                        </h1>
+                        <p className="text-sm text-slate-500 mt-1">
+                            Here{`'`}s what{`'`}s happening with {tenant?.businessName || 'your business'} today.
+                        </p>
+                    </div>
+                </div>
+
                 {/* Revenue Cards */}
                 {stats && (
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
@@ -249,7 +265,7 @@ export default function DashboardPage() {
                                     <DollarSign className="w-4 h-4 text-emerald-600" />
                                 </div>
                             </div>
-                            <p className="text-2xl font-bold text-slate-900">৳{stats.revenue.daily.toLocaleString()}</p>
+                            <p className="text-2xl font-bold text-slate-900">${stats.revenue.daily.toLocaleString()}</p>
                             <p className="text-xs text-slate-400 mt-1">{stats.appointments.today} booking{stats.appointments.today !== 1 ? 's' : ''}</p>
                         </div>
 
@@ -260,7 +276,7 @@ export default function DashboardPage() {
                                     <TrendingUp className="w-4 h-4 text-blue-600" />
                                 </div>
                             </div>
-                            <p className="text-2xl font-bold text-slate-900">৳{stats.revenue.monthly.toLocaleString()}</p>
+                            <p className="text-2xl font-bold text-slate-900">${stats.revenue.monthly.toLocaleString()}</p>
                             <p className="text-xs text-slate-400 mt-1">{stats.appointments.confirmed} confirmed</p>
                         </div>
 
@@ -271,7 +287,7 @@ export default function DashboardPage() {
                                     <Calendar className="w-4 h-4 text-purple-600" />
                                 </div>
                             </div>
-                            <p className="text-2xl font-bold text-slate-900">৳{stats.revenue.yearly.toLocaleString()}</p>
+                            <p className="text-2xl font-bold text-slate-900">${stats.revenue.yearly.toLocaleString()}</p>
                             <p className="text-xs text-slate-400 mt-1">{stats.appointments.total} total</p>
                         </div>
 
@@ -326,7 +342,7 @@ export default function DashboardPage() {
                                                     {apt.startTime} - {apt.endTime}
                                                 </span>
                                                 {apt.price > 0 && (
-                                                    <span className="text-xs font-medium text-slate-500">৳{apt.price}</span>
+                                                    <span className="text-xs font-medium text-slate-500">${apt.price}</span>
                                                 )}
                                             </div>
                                             {apt.customerPhone && (
@@ -465,7 +481,7 @@ export default function DashboardPage() {
                                                 </div>
                                                 {dayRev > 0 && (
                                                     <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">
-                                                        ৳{dayRev.toLocaleString()}
+                                                        ${dayRev.toLocaleString()}
                                                     </span>
                                                 )}
                                             </div>
@@ -499,7 +515,7 @@ export default function DashboardPage() {
                                                                 </div>
 
                                                                 {apt.price > 0 && (
-                                                                    <span className="text-sm font-semibold text-slate-600 hidden sm:block">৳{apt.price}</span>
+                                                                    <span className="text-sm font-semibold text-slate-600 hidden sm:block">${apt.price}</span>
                                                                 )}
 
                                                                 <StatusBadge status={apt.status} />
@@ -606,7 +622,7 @@ export default function DashboardPage() {
                                             {availableSlots.map(slot => (
                                                 <button key={slot.time} type="button" onClick={() => setBookingForm(f => ({ ...f, startTime: slot.time }))} className={`px-2 py-2 rounded-lg text-xs font-medium border transition-all ${bookingForm.startTime === slot.time ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-slate-700 border-slate-200 hover:border-primary-300'}`}>
                                                     {slot.time}
-                                                    {slot.price > 0 && <span className="block text-[10px] opacity-70">৳{slot.price}</span>}
+                                                    {slot.price > 0 && <span className="block text-[10px] opacity-70">${slot.price}</span>}
                                                 </button>
                                             ))}
                                         </div>

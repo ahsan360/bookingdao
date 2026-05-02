@@ -31,7 +31,7 @@ const en = {
         all: 'All',
         today: 'Today',
         tomorrow: 'Tomorrow',
-        poweredBy: 'Powered by BookEase',
+        poweredBy: 'Powered by BookingDeo',
     },
 
     // ─── Auth ────────────────────────────────────────────────

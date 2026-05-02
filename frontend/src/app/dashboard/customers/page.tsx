@@ -1,5 +1,6 @@
 'use client';
 
+import ProGate from '@/components/ProGate';
 import { useState, useEffect } from 'react';
 import { Users, Search, Phone, Mail, ArrowUpDown } from 'lucide-react';
 import api from '@/lib/api';
@@ -8,6 +9,24 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import PaginationComponent from '@/components/ui/Pagination';
 
 export default function CustomersPage() {
+    return (
+        <ProGate
+            feature="customerCRM"
+            title="Customer CRM"
+            description="Know every customer personally. Automatic profiles with full booking history, total spend, and lifetime value. Search, filter, and sort in seconds."
+            bullets={[
+                'Complete booking history per customer',
+                'Total spend and lifetime value tracking',
+                'Search by name, phone, or email',
+                'Sort by visits, spend, or last booking',
+            ]}
+        >
+            <CustomersPageInner />
+        </ProGate>
+    );
+}
+
+function CustomersPageInner() {
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [pagination, setPagination] = useState<Pagination | null>(null);
     const [loading, setLoading] = useState(true);
@@ -155,7 +174,7 @@ export default function CustomersPage() {
                                         </td>
                                         <td className="px-4 py-3 text-right">
                                             <span className="text-sm font-medium text-slate-700">
-                                                {customer.totalSpent > 0 ? `৳${customer.totalSpent.toLocaleString()}` : '—'}
+                                                {customer.totalSpent > 0 ? `$${customer.totalSpent.toLocaleString()}` : '—'}
                                             </span>
                                         </td>
                                         <td className="px-4 py-3 text-right">
@@ -192,7 +211,7 @@ export default function CustomersPage() {
                                         <div className="flex items-center gap-4 mt-2 text-xs text-slate-400">
                                             <span><strong className="text-slate-700">{customer.bookingCount}</strong> bookings</span>
                                             {customer.totalSpent > 0 && (
-                                                <span>৳{customer.totalSpent.toLocaleString()}</span>
+                                                <span>${customer.totalSpent.toLocaleString()}</span>
                                             )}
                                             <span>
                                                 {new Date(customer.lastBooking).toLocaleDateString('en', { month: 'short', day: 'numeric' })}

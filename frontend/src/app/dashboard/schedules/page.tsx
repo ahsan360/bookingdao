@@ -488,7 +488,7 @@ export default function SchedulesPage() {
                                 {weekConfig.map((config, i) => (
                                     <div key={i} className="p-3 text-center border-l border-slate-100">
                                         {config.enabled ? (
-                                            <span className="text-xs font-bold text-green-600">৳{config.price}</span>
+                                            <span className="text-xs font-bold text-green-600">${config.price}</span>
                                         ) : (
                                             <span className="text-xs text-slate-400">-</span>
                                         )}
@@ -660,7 +660,7 @@ export default function SchedulesPage() {
                                             </div>
                                             <div className="flex justify-between text-sm mt-1">
                                                 <span className="text-primary-700">Revenue Potential</span>
-                                                <span className="font-bold text-green-600">৳{countSlots(selected) * selected.price}</span>
+                                                <span className="font-bold text-green-600">${countSlots(selected) * selected.price}</span>
                                             </div>
                                         </div>
 

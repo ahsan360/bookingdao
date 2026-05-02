@@ -20,11 +20,22 @@ router.get('/tenant-info', async (req: Request, res: Response) => {
 
         const tenant = await prisma.tenant.findUnique({
             where: { id: req.tenantId },
-            select: { id: true, businessName: true, subdomain: true, bookingMode: true, pageConfig: true },
+            select: { id: true, businessName: true, subdomain: true, bookingMode: true, proUntil: true, pageConfig: true },
         });
 
         if (!tenant) return res.status(404).json({ error: 'Tenant not found' });
-        res.json(tenant);
+
+        // Compute Pro status for the public booking page (used to hide "Powered by" badge)
+        const isPro = tenant.proUntil !== null && tenant.proUntil.getTime() > Date.now();
+
+        res.json({
+            id: tenant.id,
+            businessName: tenant.businessName,
+            subdomain: tenant.subdomain,
+            bookingMode: tenant.bookingMode,
+            pageConfig: tenant.pageConfig,
+            tier: isPro ? 'pro' : 'free',
+        });
     } catch (error) {
         console.error('Get tenant info error:', error);
         res.status(500).json({ error: 'Failed to get tenant info' });

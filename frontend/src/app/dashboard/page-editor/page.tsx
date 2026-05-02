@@ -4,8 +4,28 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FileEdit } from 'lucide-react';
 import PageConfigForm from '@/components/admin/PageConfigForm';
+import ProGate from '@/components/ProGate';
 
 export default function PageEditorPage() {
+    return (
+        <ProGate
+            feature="pageEditor"
+            title="Custom branding & page editor"
+            description="Make your booking page unmistakably yours. Upload a banner image, build a portfolio gallery, set custom brand colors, and craft your business story."
+            bullets={[
+                'Banner image and 6-photo gallery',
+                'Custom primary color',
+                'Custom headline and About section',
+                'Social links (Facebook, Instagram, WhatsApp)',
+                'Remove "Powered by BookingDeo" badge',
+            ]}
+        >
+            <PageEditorInner />
+        </ProGate>
+    );
+}
+
+function PageEditorInner() {
     const router = useRouter();
 
     useEffect(() => {

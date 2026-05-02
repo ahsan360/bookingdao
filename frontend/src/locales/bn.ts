@@ -33,7 +33,7 @@ const bn: TranslationKeys = {
         all: 'সকল',
         today: 'আজ',
         tomorrow: 'আগামীকাল',
-        poweredBy: 'BookEase দ্বারা চালিত',
+        poweredBy: 'BookingDeo দ্বারা চালিত',
     },
 
     // ─── Auth ────────────────────────────────────────────────

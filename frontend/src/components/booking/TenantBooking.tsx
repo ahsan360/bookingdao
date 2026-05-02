@@ -208,7 +208,7 @@ export default function TenantBooking() {
                     <div className="mt-8 p-5 bg-white rounded-2xl border border-slate-100 shadow-card">
                         <p className="text-xs text-slate-400 mb-2 uppercase tracking-wider font-medium">{t.booking.appointmentDetails}</p>
                         <p className="font-semibold text-slate-800">{new Date(selectedDate).toLocaleDateString()}</p>
-                        <p className="text-primary-600 font-semibold text-lg">{selectedSlot?.time} - ৳{selectedSlot?.price}</p>
+                        <p className="text-primary-600 font-semibold text-lg">{selectedSlot?.time} - ${selectedSlot?.price}</p>
                     </div>
                     <button onClick={() => window.location.reload()} className="btn-secondary mt-6">
                         {t.booking.bookAnother}
@@ -469,7 +469,7 @@ export default function TenantBooking() {
                                                                 <span className="block">{slot.time}</span>
                                                                 {slot.price > 0 && (
                                                                     <span className={`block text-xs mt-0.5 ${selectedSlot?.time === slot.time ? 'text-white/80' : 'text-primary-600 font-semibold'}`}>
-                                                                        ৳{slot.price}
+                                                                        ${slot.price}
                                                                     </span>
                                                                 )}
                                                             </button>
@@ -502,7 +502,7 @@ export default function TenantBooking() {
                                             {selectedSlot.price > 0 && (
                                                 <div className="text-right">
                                                     <p className="text-[10px] text-slate-400 uppercase tracking-wider">{t.common.price}</p>
-                                                    <p className="text-2xl font-bold text-primary-700">৳{selectedSlot.price}</p>
+                                                    <p className="text-2xl font-bold text-primary-700">${selectedSlot.price}</p>
                                                 </div>
                                             )}
                                         </div>
@@ -550,7 +550,7 @@ export default function TenantBooking() {
                                                     ) : (
                                                         <>
                                                             <Shield className="w-4 h-4" />
-                                                            <span>{t.booking.payOnline} ৳{selectedSlot.price}</span>
+                                                            <span>{t.booking.payOnline} ${selectedSlot.price}</span>
                                                         </>
                                                     )}
                                                 </button>
@@ -583,7 +583,7 @@ export default function TenantBooking() {
                                                                 {tenant?.bookingMode === 'manual_only'
                                                                     ? t.booking.confirmBooking
                                                                     : selectedSlot.price > 0
-                                                                        ? `${t.booking.confirmAndPay} ৳${selectedSlot.price}`
+                                                                        ? `${t.booking.confirmAndPay} $${selectedSlot.price}`
                                                                         : t.booking.confirmBooking}
                                                             </span>
                                                         </>
@@ -614,7 +614,16 @@ export default function TenantBooking() {
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 text-center text-sm text-slate-400">
                     <div className="flex items-center justify-center gap-4">
                         <LanguageSwitcher />
-                        <span>{t.common.poweredBy}</span>
+                        {tenant?.tier !== 'pro' && (
+                            <a
+                                href="https://bookingdeo.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:text-slate-600 transition-colors"
+                            >
+                                {t.common.poweredBy}
+                            </a>
+                        )}
                     </div>
                 </div>
             </div>

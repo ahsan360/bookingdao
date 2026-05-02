@@ -360,17 +360,36 @@ router.get('/me', authenticate, async (req: AuthRequest, res: Response) => {
             where: { id: req.user!.userId },
             select: {
                 id: true, firstName: true, lastName: true, email: true, phone: true,
-                role: true, tenantId: true,
-                tenant: { select: { id: true, businessName: true, subdomain: true } },
+                role: true, tenantId: true, isSuperAdmin: true,
+                tenant: { select: { id: true, businessName: true, subdomain: true, proUntil: true } },
             },
         });
 
         if (!user) return res.status(404).json({ error: 'User not found' });
 
+        const { getTenantEntitlements } = await import('../services/entitlements.service');
+        const entitlements = user.tenantId
+            ? await getTenantEntitlements(user.tenantId)
+            : null;
+
+        // Strip proUntil from tenant payload — it's exposed via entitlements
+        const tenantOut = user.tenant
+            ? { id: user.tenant.id, businessName: user.tenant.businessName, subdomain: user.tenant.subdomain }
+            : null;
+
         res.json({
-            ...user,
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone,
+            role: user.role,
+            tenantId: user.tenantId,
+            isSuperAdmin: user.isSuperAdmin,
+            tenant: tenantOut,
             name: `${user.firstName} ${user.lastName}`.trim(),
             hasCompletedOnboarding: !!user.tenantId,
+            entitlements,
         });
     } catch (error) {
         console.error('Get user error:', error);

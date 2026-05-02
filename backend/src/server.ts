@@ -14,6 +14,7 @@ import auditLogRoutes from './routes/admin/audit-log.routes';
 import campaignRoutes from './routes/admin/campaign.routes';
 import customerRoutes from './routes/admin/customer.routes';
 import settingsRoutes from './routes/admin/settings.routes';
+import superAdminRoutes from './routes/admin/super-admin.routes';
 import { extractSubdomain } from './middleware/subdomain';
 import { errorHandler } from './middleware/error.middleware';
 
@@ -74,6 +75,7 @@ app.use('/api/admin/audit-log', auditLogRoutes);
 app.use('/api/admin/campaigns', campaignRoutes);
 app.use('/api/admin/customers', customerRoutes);
 app.use('/api/admin/settings', settingsRoutes);
+app.use('/api/admin/super-admin', superAdminRoutes);
 
 // Health check
 app.get('/health', (req: Request, res: Response) => {

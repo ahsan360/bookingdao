@@ -6,8 +6,8 @@ import { Providers } from './providers'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-    title: 'BookEase - Multi-Tenant Booking System',
-    description: 'Professional appointment booking system with flexible scheduling and secure payments',
+    title: 'BookingDeo — Multi-tenant booking & payments infrastructure',
+    description: 'BookingDeo is a complete platform for accepting appointments online: scheduling, branded subdomains, online payments and customer records — built on a multi-tenant architecture.',
 }
 
 export default function RootLayout({

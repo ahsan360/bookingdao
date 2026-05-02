@@ -5,15 +5,18 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
     Calendar, Clock, Users, LogOut, Settings, FileEdit,
-    TrendingUp, CalendarDays, FileText, Menu, X, LayoutDashboard, Megaphone, Contact
+    TrendingUp, CalendarDays, FileText, Menu, X, LayoutDashboard, Megaphone, Contact,
+    ShieldCheck, Sparkles, ArrowRight, CreditCard
 } from 'lucide-react';
-import { useAuth } from '@/lib/auth';
+import { useAuth, ProFeature } from '@/lib/auth';
+import ProBadge from '@/components/ui/ProBadge';
 
 interface NavItem {
     href: string;
     label: string;
     icon: any;
     ownerOnly?: boolean;
+    proFeature?: ProFeature;
 }
 
 interface NavGroup {
@@ -33,17 +36,18 @@ const NAV_GROUPS: NavGroup[] = [
         label: 'Business',
         items: [
             { href: '/dashboard/schedules', label: 'Schedules', icon: Clock },
-            { href: '/dashboard/sales', label: 'Sales', icon: TrendingUp },
-            { href: '/dashboard/customers', label: 'Customers', icon: Contact },
-            { href: '/dashboard/campaigns', label: 'Campaigns', icon: Megaphone },
+            { href: '/dashboard/sales', label: 'Sales', icon: TrendingUp, proFeature: 'salesAnalytics' },
+            { href: '/dashboard/customers', label: 'Customers', icon: Contact, proFeature: 'customerCRM' },
+            { href: '/dashboard/campaigns', label: 'Campaigns', icon: Megaphone, proFeature: 'campaigns' },
         ],
     },
     {
         label: 'Settings',
         items: [
-            { href: '/dashboard/page-editor', label: 'My Page', icon: FileEdit },
+            { href: '/dashboard/page-editor', label: 'My Page', icon: FileEdit, proFeature: 'pageEditor' },
+            { href: '/dashboard/payment-config', label: 'Payments', icon: CreditCard, ownerOnly: true, proFeature: 'paymentGateway' },
             { href: '/dashboard/team', label: 'Team', icon: Users, ownerOnly: true },
-            { href: '/dashboard/audit-log', label: 'Audit Log', icon: FileText, ownerOnly: true },
+            { href: '/dashboard/audit-log', label: 'Audit Log', icon: FileText, ownerOnly: true, proFeature: 'auditLog' },
             { href: '/dashboard/settings', label: 'Settings', icon: Settings, ownerOnly: true },
         ],
     },
@@ -52,7 +56,7 @@ const NAV_GROUPS: NavGroup[] = [
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const router = useRouter();
-    const { user, tenant, isOwner, isAuthenticated, hasCompletedOnboarding, loading, logout } = useAuth();
+    const { user, tenant, isOwner, isSuperAdmin, isPro, entitlements, canUse, isAuthenticated, hasCompletedOnboarding, loading, logout } = useAuth();
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     useEffect(() => {
@@ -98,11 +102,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <div className="px-5 py-5 border-b border-slate-100">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2.5">
-                            <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-                                <Calendar className="w-4 h-4 text-white" />
+                            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #635bff 0%, #8b5cf6 100%)' }}>
+                                <Calendar className="w-4 h-4 text-white" strokeWidth={2.5} />
                             </div>
                             <div>
-                                <h1 className="text-sm font-bold text-slate-900 leading-tight">BookEase</h1>
+                                <h1 className="text-sm font-semibold text-slate-900 leading-tight tracking-tight">BookingDeo</h1>
                                 <p className="text-[11px] text-slate-400 truncate max-w-[140px]">{tenant?.businessName}</p>
                             </div>
                         </div>
@@ -116,7 +120,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </div>
 
                 {/* Nav Groups */}
-                <nav className="px-3 py-4 space-y-5 flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 160px)' }}>
+                <nav className="px-3 py-4 space-y-5 flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 250px)' }}>
                     {NAV_GROUPS.map(group => {
                         const visibleItems = group.items.filter(item => !item.ownerOnly || isOwner);
                         if (visibleItems.length === 0) return null;
@@ -130,21 +134,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                                     {visibleItems.map(item => {
                                         const Icon = item.icon;
                                         const active = isActive(item.href);
+                                        const locked = !!item.proFeature && !canUse(item.proFeature);
                                         return (
                                             <Link
                                                 key={item.href}
                                                 href={item.href}
                                                 onClick={() => setSidebarOpen(false)}
                                                 className={`
-                                                    flex items-center space-x-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all
+                                                    flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-[13px] font-medium transition-all
                                                     ${active
                                                         ? 'bg-primary-50 text-primary-700'
                                                         : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800'
                                                     }
                                                 `}
                                             >
-                                                <Icon className={`w-4 h-4 ${active ? 'text-primary-600' : 'text-slate-400'}`} />
-                                                <span>{item.label}</span>
+                                                <span className="flex items-center space-x-2.5 min-w-0">
+                                                    <Icon className={`w-4 h-4 flex-shrink-0 ${active ? 'text-primary-600' : 'text-slate-400'}`} />
+                                                    <span className="truncate">{item.label}</span>
+                                                </span>
+                                                {locked && <ProBadge size="xs" />}
                                             </Link>
                                         );
                                     })}
@@ -154,9 +162,47 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     })}
                 </nav>
 
-                {/* User info + Logout */}
-                <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-slate-100 bg-white">
-                    <div className="flex items-center space-x-2.5 px-3 py-2 mb-1">
+                {/* User info + plan + super admin + Logout */}
+                <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-slate-100 bg-white space-y-1">
+                    {/* Plan status */}
+                    {isPro ? (
+                        <div className="px-3 py-2 rounded-lg text-white relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #635bff 0%, #8b5cf6 100%)' }}>
+                            <div className="flex items-center justify-between gap-2">
+                                <span className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider">
+                                    <Sparkles className="w-3 h-3" strokeWidth={2.5} />
+                                    Pro plan
+                                </span>
+                                {entitlements?.proUntil && (
+                                    <span className="text-[10px] text-white/80">
+                                        until {new Date(entitlements.proUntil).toLocaleDateString('en', { month: 'short', day: 'numeric' })}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    ) : (
+                        <Link
+                            href="/pricing"
+                            className="flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-[12px] font-semibold border border-primary-200 bg-primary-50 text-primary-700 hover:bg-primary-100 transition-all"
+                        >
+                            <span className="flex items-center gap-1.5">
+                                <Sparkles className="w-3.5 h-3.5" strokeWidth={2.5} />
+                                Upgrade to Pro
+                            </span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
+                    )}
+
+                    {isSuperAdmin && (
+                        <Link
+                            href="/super-admin"
+                            className="flex items-center space-x-2.5 px-3 py-2 rounded-lg text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 w-full transition-all"
+                        >
+                            <ShieldCheck className="w-4 h-4 text-slate-400" />
+                            <span>Super admin</span>
+                        </Link>
+                    )}
+
+                    <div className="flex items-center space-x-2.5 px-3 py-2">
                         <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-bold">
                             {user?.name?.charAt(0).toUpperCase() || '?'}
                         </div>
@@ -187,10 +233,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             <Menu className="w-5 h-5 text-slate-600" />
                         </button>
                         <div className="flex items-center space-x-2">
-                            <div className="w-6 h-6 bg-primary-600 rounded-md flex items-center justify-center">
-                                <Calendar className="w-3.5 h-3.5 text-white" />
+                            <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #635bff 0%, #8b5cf6 100%)' }}>
+                                <Calendar className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
                             </div>
-                            <span className="text-sm font-bold text-slate-900">BookEase</span>
+                            <span className="text-sm font-semibold text-slate-900 tracking-tight">BookingDeo</span>
                         </div>
                         <div className="w-9" />
                     </div>
