@@ -10,7 +10,7 @@ import { useAuth } from '@/lib/auth';
 export default function LoginPage() {
     const router = useRouter();
     const { login } = useAuth();
-    const [loginMethod, setLoginMethod] = useState<'phone' | 'email'>('phone');
+    const [loginMethod, setLoginMethod] = useState<'phone' | 'email'>('email');
     const [formData, setFormData] = useState({
         phone: '',
         email: '',

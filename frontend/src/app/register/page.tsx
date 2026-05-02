@@ -12,7 +12,7 @@ type ContactMethod = 'phone' | 'email';
 export default function RegisterPage() {
     const router = useRouter();
     const { login } = useAuth();
-    const [contactMethod, setContactMethod] = useState<ContactMethod>('phone');
+    const [contactMethod, setContactMethod] = useState<ContactMethod>('email');
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',

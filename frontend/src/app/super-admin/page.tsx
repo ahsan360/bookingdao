@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -38,7 +38,7 @@ export default function SuperAdminPage() {
     const [grantDate, setGrantDate] = useState('');
     const [grantBusy, setGrantBusy] = useState(false);
 
-    const fetchTenants = useCallback(async () => {
+    const fetchTenants = async () => {
         try {
             const res = await api.get('/admin/super-admin/tenants');
             setTenants(res.data.tenants);
@@ -47,7 +47,7 @@ export default function SuperAdminPage() {
         } finally {
             setLoading(false);
         }
-    }, [addToast]);
+    };
 
     useEffect(() => {
         if (authLoading) return;
@@ -60,7 +60,8 @@ export default function SuperAdminPage() {
             return;
         }
         fetchTenants();
-    }, [authLoading, isAuthenticated, isSuperAdmin, router, fetchTenants]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [authLoading, isAuthenticated, isSuperAdmin, router]);
 
     const openGrantModal = (tenant: SuperAdminTenant) => {
         setGrantModal(tenant);
